@@ -5,7 +5,7 @@ AssetOrigin:
   productId: 120676
   packageName: Simple Heart Health System
   packageVersion: 1.0
-  assetPath: Assets/HealthHeartSystem/Graphics/mini-heart.png
+  assetPath: Assets/Metarials/mini-heart.png
   uploadId: 286486
 TextureImporter:
   internalIDToNameTable:

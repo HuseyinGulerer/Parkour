@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 3f;
     public float rotationSpeed = 7f;
+    public float jumpForce = 5f;
+
 
     public Slider healthBar;
     public float playerHealth = 50;
@@ -19,6 +21,11 @@ public class PlayerController : MonoBehaviour
     bool isInThorn = false;
 
     private Vector3 moveDirection;
+    private Rigidbody rb;
+    private bool isGrounded = true;
+
+    private bool levelCompleteTriggered = false;
+
 
     private void Start()
     {
@@ -26,6 +33,7 @@ public class PlayerController : MonoBehaviour
         healthBar.value = playerHealth;
 
         playerdead = GetComponent<PlayerDead>();
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -45,6 +53,12 @@ public class PlayerController : MonoBehaviour
 
         transform.Translate(moveDirection * currentSpeed * Time.deltaTime, Space.World);
 
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
+        }
+
         if (isInLav)
         {
             playerHealth -= 10 * Time.deltaTime;
@@ -60,6 +74,19 @@ public class PlayerController : MonoBehaviour
         {
             playerdead.Die();
         }
+
+        if (isInThorn)
+        {
+            playerHealth -= 3 * Time.deltaTime;
+            moveSpeed = 1;
+            healthBar.value = playerHealth;
+
+            if (playerHealth <= 0)
+            {
+                playerdead.Die();
+            }
+        }
+
     }
     public void Respawn()
     {
@@ -68,12 +95,14 @@ public class PlayerController : MonoBehaviour
         healthBar.value = playerHealth;
         transform.position = new Vector3(0, 1, 0);
         Debug.Log("Yeniden Doðdu");
+
         PlayerDead deadscript = gameObject.GetComponent<PlayerDead>();
         if (deadscript != null)
         {
             deadscript.ResetDead();
         }
     }
+
 
 
     private void OnCollisionEnter(Collision collision)
@@ -89,6 +118,25 @@ public class PlayerController : MonoBehaviour
             isInIce = true;
             Debug.Log("Buza girdik");
         }
+
+        if (collision.gameObject.CompareTag("Thorn"))
+        {
+            isInThorn = true;
+            Debug.Log("Dikene Girdik");
+        }
+
+        if (collision.contacts[0].normal.y > 0.5f)
+        {
+            isGrounded = true;
+        }
+
+        if (collision.gameObject.CompareTag("Finish") && !levelCompleteTriggered)
+        {
+            levelCompleteTriggered = true;
+            FindObjectOfType<GameManager>().TriggerLevelComplete();
+            Debug.Log("Finish trigger tetiklendi");
+        }
+
     }
 
     private void OnCollisionExit(Collision collision)
@@ -103,6 +151,12 @@ public class PlayerController : MonoBehaviour
         {
             isInIce = false;
             Debug.Log("Buzdan Çýktýk");
+        }
+
+        if (collision.gameObject.CompareTag("Thorn"))
+        {
+            isInThorn = false;
+            Debug.Log("Dikenden Çýktýk");
         }
     }
 

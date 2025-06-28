@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,9 +7,11 @@ public class GameManager : MonoBehaviour
 {
     public TextMeshProUGUI deadCounter;
     public GameObject gameOverPanel;
+    public GameObject levelCompletePanel; 
 
     private int deadcount = 0;
     private bool isGameOver = false;
+    private bool isLevelComplete = false;
 
     public void RestartGame()
     {
@@ -16,6 +19,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
     void Start()
     {
         deadcount = 0;
@@ -25,11 +29,18 @@ public class GameManager : MonoBehaviour
         {
             gameOverPanel.SetActive(false);
         }
+
+        if (levelCompletePanel != null)
+        {
+            levelCompletePanel.SetActive(false);
+        }
+
+        Time.timeScale = 1f;
     }
 
     public void IncreaseDeadCount()
     {
-        if (isGameOver) return;
+        if (isGameOver || isLevelComplete) return;
 
         deadcount++;
         UpdateDeadCounterUI();
@@ -60,5 +71,24 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-   
+    public void TriggerLevelComplete()
+    {
+        if (isLevelComplete) return;
+
+        isLevelComplete = true;
+
+        if (levelCompletePanel != null)
+        {
+            levelCompletePanel.SetActive(true);
+        }
+
+        Time.timeScale = 0f;
+        Debug.Log("Level Completed!");
+    }
+
+    public void ContinueAfterLevel()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
