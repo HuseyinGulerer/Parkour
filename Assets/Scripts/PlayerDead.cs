@@ -11,6 +11,7 @@ public class PlayerDead : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.FindObjectOfType<GameManager>();
+        playerController = GetComponent<PlayerController>();
     }
 
     public void Die()
@@ -21,11 +22,14 @@ public class PlayerDead : MonoBehaviour
         if (gameManager != null)
         {
             gameManager.IncreaseDeadCount();
-            playerController.Respawn();
         }
-        gameObject.SetActive(false);
-    }
 
+        if (playerController != null)
+        {
+            playerController.StartRespawnDelay();
+        }
+
+    }
     public void ResetDead()
     {
         isDead = false;
