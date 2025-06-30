@@ -7,6 +7,11 @@ TagManager:
   - Lav
   - Ice
   - Thorn
+  - Lv2Start
+  - Damage
+  - Health
+  - Lv2Finish
+  - Jump
   layers:
   - Default
   - TransparentFX

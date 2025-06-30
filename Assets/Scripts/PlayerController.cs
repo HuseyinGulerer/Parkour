@@ -10,22 +10,23 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 7f;
     public float jumpForce = 5f;
 
-
     public Slider healthBar;
     public float playerHealth = 50;
 
     private PlayerDead playerdead;
 
+    private GameObject[] damagePlanes;
+    private GameObject[] healthPlanes;
+
     bool isInLav = false;
     bool isInIce = false;
     bool isInThorn = false;
+    bool isInDamage = false;
+    bool isInHealth = false;
 
     private Vector3 moveDirection;
     private Rigidbody rb;
     private bool isGrounded = true;
-
-    private bool levelCompleteTriggered = false;
-
 
     private void Start()
     {
@@ -34,7 +35,34 @@ public class PlayerController : MonoBehaviour
 
         playerdead = GetComponent<PlayerDead>();
         rb = GetComponent<Rigidbody>();
+
+        damagePlanes = GameObject.FindGameObjectsWithTag("Damage");
+        healthPlanes = GameObject.FindGameObjectsWithTag("Health");
+
+        foreach (GameObject plane in damagePlanes)
+        {
+            plane.SetActive(false);
+        }
+
+        foreach (GameObject plane in healthPlanes)
+        {
+            plane.SetActive(false);
+        }
     }
+
+    public void ActivateLevel2Planes()
+    {
+        foreach (GameObject plane in damagePlanes)
+        {
+            plane.SetActive(true);
+        }
+
+        foreach (GameObject plane in healthPlanes)
+        {
+            plane.SetActive(true);
+        }
+    }
+
 
     void Update()
     {
@@ -78,13 +106,29 @@ public class PlayerController : MonoBehaviour
         if (isInThorn)
         {
             playerHealth -= 3 * Time.deltaTime;
-            moveSpeed = 1;
             healthBar.value = playerHealth;
 
             if (playerHealth <= 0)
             {
                 playerdead.Die();
             }
+        }
+
+        if (isInDamage)
+        {
+            playerHealth -= 7 * Time.deltaTime;
+            healthBar.value = playerHealth;
+
+            if (playerHealth <= 0)
+            {
+                playerdead.Die();
+            }
+        }
+
+        if (isInHealth)
+        {
+            playerHealth += 3 * Time.deltaTime;
+            healthBar.value = playerHealth;
         }
 
     }
@@ -94,7 +138,6 @@ public class PlayerController : MonoBehaviour
         playerHealth = 50;
         healthBar.value = playerHealth;
         transform.position = new Vector3(0, 1, 0);
-        Debug.Log("Yeniden Doðdu");
 
         PlayerDead deadscript = gameObject.GetComponent<PlayerDead>();
         if (deadscript != null)
@@ -110,19 +153,16 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Lav"))
         {
             isInLav = true;
-            Debug.Log("Lavýn içine girdik");
         }
 
         if (collision.gameObject.CompareTag("Ice"))
         {
             isInIce = true;
-            Debug.Log("Buza girdik");
         }
 
         if (collision.gameObject.CompareTag("Thorn"))
         {
             isInThorn = true;
-            Debug.Log("Dikene Girdik");
         }
 
         if (collision.contacts[0].normal.y > 0.5f)
@@ -130,11 +170,19 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
         }
 
-        if (collision.gameObject.CompareTag("Finish") && !levelCompleteTriggered)
+        if (collision.gameObject.CompareTag("Lv2Start"))
         {
-            levelCompleteTriggered = true;
-            FindObjectOfType<GameManager>().TriggerLevelComplete();
-            Debug.Log("Finish trigger tetiklendi");
+            ActivateLevel2Planes();
+        }
+
+        if (collision.gameObject.CompareTag("Health"))
+        {
+            isInHealth = true;
+        }
+
+        if (collision.gameObject.CompareTag("Damage"))
+        {
+            isInDamage = true;
         }
 
     }
@@ -144,20 +192,28 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Lav"))
         {
             isInLav = false;
-            Debug.Log("Lavdan çýktýk");
         }
 
         if (collision.gameObject.CompareTag("Ice"))
         {
             isInIce = false;
-            Debug.Log("Buzdan Çýktýk");
         }
 
         if (collision.gameObject.CompareTag("Thorn"))
         {
             isInThorn = false;
-            Debug.Log("Dikenden Çýktýk");
         }
+
+        if (collision.gameObject.CompareTag("Health"))
+        {
+            isInHealth = false;
+        }
+
+        if (collision.gameObject.CompareTag("Damage"))
+        {
+            isInDamage = false;
+        }
+
     }
 
     public void StartRespawnDelay()
@@ -167,7 +223,6 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator RespawnWithDelay()
     {
-        Debug.Log("Düþtü Yeniden Doðdu");
         yield return new WaitForSeconds(1f);
         Respawn();
     }

@@ -10,7 +10,7 @@ public class PlayerDead : MonoBehaviour
 
     void Start()
     {
-        gameManager = GameObject.FindObjectOfType<GameManager>();
+        gameManager = GameObject.FindAnyObjectByType<GameManager>();
         playerController = GetComponent<PlayerController>();
     }
 
