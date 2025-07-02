@@ -10,61 +10,22 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 7f;
     public float jumpForce = 5f;
 
-    public Slider healthBar;
-    public float playerHealth = 50;
-
-    private PlayerDead playerdead;
-
-    private GameObject[] damagePlanes;
-    private GameObject[] healthPlanes;
-
-    bool isInLav = false;
-    bool isInIce = false;
-    bool isInThorn = false;
-    bool isInDamage = false;
-    bool isInHealth = false;
+    public float jumpForceValue = 75f;
 
     private Vector3 moveDirection;
     private Rigidbody rb;
+    private PlayerDead playerDead;
     private bool isGrounded = true;
+
+    private bool isInIce = false;
 
     private void Start()
     {
-        healthBar.maxValue = playerHealth;
-        healthBar.value = playerHealth;
-
-        playerdead = GetComponent<PlayerDead>();
         rb = GetComponent<Rigidbody>();
-
-        damagePlanes = GameObject.FindGameObjectsWithTag("Damage");
-        healthPlanes = GameObject.FindGameObjectsWithTag("Health");
-
-        foreach (GameObject plane in damagePlanes)
-        {
-            plane.SetActive(false);
-        }
-
-        foreach (GameObject plane in healthPlanes)
-        {
-            plane.SetActive(false);
-        }
+        playerDead = GetComponent<PlayerDead>();
     }
 
-    public void ActivateLevel2Planes()
-    {
-        foreach (GameObject plane in damagePlanes)
-        {
-            plane.SetActive(true);
-        }
-
-        foreach (GameObject plane in healthPlanes)
-        {
-            plane.SetActive(true);
-        }
-    }
-
-
-    void Update()
+    private void Update()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
@@ -87,82 +48,17 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
 
-        if (isInLav)
+        if (transform.position.y < 0 && !playerDead.isDead)
         {
-            playerHealth -= 10 * Time.deltaTime;
-            healthBar.value = playerHealth;
-
-            if (playerHealth <= 0)
-            {
-                playerdead.Die();
-            }
-        }
-
-        if (transform.position.y < 0)
-        {
-            playerdead.Die();
-        }
-
-        if (isInThorn)
-        {
-            playerHealth -= 3 * Time.deltaTime;
-            healthBar.value = playerHealth;
-
-            if (playerHealth <= 0)
-            {
-                playerdead.Die();
-            }
-        }
-
-        if (isInDamage)
-        {
-            playerHealth -= 7 * Time.deltaTime;
-            healthBar.value = playerHealth;
-
-            if (playerHealth <= 0)
-            {
-                playerdead.Die();
-            }
-        }
-
-        if (isInHealth)
-        {
-            playerHealth += 3 * Time.deltaTime;
-            healthBar.value = playerHealth;
-        }
-
-    }
-    public void Respawn()
-    {
-        gameObject.SetActive(true);
-        playerHealth = 50;
-        healthBar.value = playerHealth;
-        transform.position = new Vector3(0, 1, 0);
-
-        PlayerDead deadscript = gameObject.GetComponent<PlayerDead>();
-        if (deadscript != null)
-        {
-            deadscript.ResetDead();
+            playerDead.Die();
         }
     }
-
-
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Lav"))
-        {
-            isInLav = true;
-        }
-
         if (collision.gameObject.CompareTag("Ice"))
         {
             isInIce = true;
-        }
-
-        if (collision.gameObject.CompareTag("Thorn"))
-        {
-            isInThorn = true;
         }
 
         if (collision.contacts[0].normal.y > 0.5f)
@@ -170,60 +66,18 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
         }
 
-        if (collision.gameObject.CompareTag("Lv2Start"))
+        if (collision.gameObject.CompareTag("Jump"))
         {
-            ActivateLevel2Planes();
+            rb.AddForce(Vector3.up * jumpForceValue, ForceMode.Impulse);
         }
-
-        if (collision.gameObject.CompareTag("Health"))
-        {
-            isInHealth = true;
-        }
-
-        if (collision.gameObject.CompareTag("Damage"))
-        {
-            isInDamage = true;
-        }
-
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Lav"))
-        {
-            isInLav = false;
-        }
-
         if (collision.gameObject.CompareTag("Ice"))
         {
             isInIce = false;
         }
-
-        if (collision.gameObject.CompareTag("Thorn"))
-        {
-            isInThorn = false;
-        }
-
-        if (collision.gameObject.CompareTag("Health"))
-        {
-            isInHealth = false;
-        }
-
-        if (collision.gameObject.CompareTag("Damage"))
-        {
-            isInDamage = false;
-        }
-
     }
 
-    public void StartRespawnDelay()
-    {
-        StartCoroutine(RespawnWithDelay());
-    }
-
-    public IEnumerator RespawnWithDelay()
-    {
-        yield return new WaitForSeconds(1f);
-        Respawn();
-    }
 }

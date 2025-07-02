@@ -1,4 +1,3 @@
-using UnityEditor.Build.Content;
 using UnityEngine;
 
 public class PlayerDead : MonoBehaviour
@@ -7,11 +6,18 @@ public class PlayerDead : MonoBehaviour
     public bool isDead = false;
 
     private PlayerController playerController;
+    private PlayerHealth playerHealth;
+    private Renderer[] renderers;
+    private Collider[] colliders;
 
-    void Start()
+    private void Start()
     {
         gameManager = GameObject.FindAnyObjectByType<GameManager>();
         playerController = GetComponent<PlayerController>();
+        playerHealth = GetComponent<PlayerHealth>();
+
+        renderers = GetComponentsInChildren<Renderer>();
+        colliders = GetComponentsInChildren<Collider>();
     }
 
     public void Die()
@@ -20,23 +26,29 @@ public class PlayerDead : MonoBehaviour
         isDead = true;
 
         if (gameManager != null)
-        {
             gameManager.IncreaseDeadCount();
-        }
 
-        if (playerController != null)
-        {
-            playerController.StartRespawnDelay();
-        }
+        if (gameManager != null && playerHealth != null)
+            gameManager.StartPlayerRespawn(playerHealth, 1f);
 
+        SetActiveVisuals(false);
     }
+
     public void ResetDead()
     {
         isDead = false;
+        SetActiveVisuals(true);
     }
 
-    void Update()
+    private void SetActiveVisuals(bool active)
     {
+        foreach (var rend in renderers)
+            rend.enabled = active;
 
+        foreach (var col in colliders)
+            col.enabled = active;
+
+        if (playerController != null)
+            playerController.enabled = active;
     }
 }

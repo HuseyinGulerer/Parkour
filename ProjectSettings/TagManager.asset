@@ -12,6 +12,8 @@ TagManager:
   - Health
   - Lv2Finish
   - Jump
+  - FallingPlatform
+  - Lv3Finish
   layers:
   - Default
   - TransparentFX
