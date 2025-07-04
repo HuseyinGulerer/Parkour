@@ -8,8 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 3f;
     public float rotationSpeed = 7f;
-    public float jumpForce = 5f;
-
+    public float jumpForce = 20f;
+    public float bridgeJumpy = 15f;
     public float jumpForceValue = 75f;
 
     private Vector3 moveDirection;
@@ -69,6 +69,10 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Jump"))
         {
             rb.AddForce(Vector3.up * jumpForceValue, ForceMode.Impulse);
+        }
+        if (collision.gameObject.CompareTag("BridgeJumpy"))
+        {
+            rb.AddForce(Vector3.up * bridgeJumpy, ForceMode.Impulse);
         }
     }
 
