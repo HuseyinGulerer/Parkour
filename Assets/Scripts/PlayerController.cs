@@ -8,9 +8,9 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 3f;
     public float rotationSpeed = 7f;
-    public float jumpForce = 20f;
+    public float jumpForce = 35f;
     public float bridgeJumpy = 15f;
-    public float jumpForceValue = 75f;
+    public float jumpForceValue = 125f;
 
     private Vector3 moveDirection;
     private Rigidbody rb;
