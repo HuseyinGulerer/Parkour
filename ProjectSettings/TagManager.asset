@@ -15,6 +15,7 @@ TagManager:
   - FallingPlatform
   - Lv3Finish
   - BridgeJumpy
+  - Finishh
   layers:
   - Default
   - TransparentFX
