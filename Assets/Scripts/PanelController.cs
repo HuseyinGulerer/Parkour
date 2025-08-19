@@ -4,7 +4,7 @@ public class PanelController : MonoBehaviour
 {
     public GameObject startPanel;
     public GameObject gameUIandObjects;
-    public GameObject menuButton;  // Menü butonu buraya
+    public GameObject menuButton;  
     public GameObject finishPanel;
 
     public void CloseStartPanel()
@@ -16,7 +16,7 @@ public class PanelController : MonoBehaviour
             gameUIandObjects.SetActive(true);
 
         if (menuButton != null)
-            menuButton.SetActive(true);  // Menü butonunu göster
+            menuButton.SetActive(true);  
     }
     public void CloseFinishPanel()
     {

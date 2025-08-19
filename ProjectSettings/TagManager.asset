@@ -16,6 +16,7 @@ TagManager:
   - Lv3Finish
   - BridgeJumpy
   - Finishh
+  - Target
   layers:
   - Default
   - TransparentFX

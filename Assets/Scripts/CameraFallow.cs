@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;  // Takip edilecek karakter
+    public Transform target;
     public Vector3 offset = new Vector3(0, 130, -145);
     public float smoothSpeed = 10f;
 
@@ -14,6 +14,6 @@ public class CameraFollow : MonoBehaviour
         Vector3 smoothed = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         transform.position = smoothed;
 
-        transform.LookAt(target); // Opsiyonel: Karaktere bak
+        transform.LookAt(target);
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI deadCounter;
+    [SerializeField] private TextMeshProUGUI olumSayacý;
     [SerializeField] private GameObject gameOverPanel;
 
     private int deadcount = 0;
@@ -45,8 +45,8 @@ public class GameManager : MonoBehaviour
 
     private void UpdateDeadCounterUI()
     {
-        if (deadCounter != null)
-            deadCounter.text = "Dead Counter: " + deadcount;
+        if (olumSayacý != null)
+            olumSayacý.text = "Ölüm Sayacý: " + deadcount;
     }
 
     private void TriggerGameOver()
