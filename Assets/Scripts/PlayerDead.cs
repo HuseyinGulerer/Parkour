@@ -10,8 +10,11 @@ public class PlayerDead : MonoBehaviour
     private Renderer[] renderers;
     private Collider[] colliders;
 
+    private AudioSource audioSource;
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         gameManager = GameObject.FindAnyObjectByType<GameManager>();
         playerController = GetComponent<PlayerController>();
         playerHealth = GetComponent<PlayerHealth>();
@@ -23,6 +26,9 @@ public class PlayerDead : MonoBehaviour
     public void Die()
     {
         if (isDead) return;
+        
+        gameManager.StopBackgroundMusic();
+        audioSource.Play();
         isDead = true;
 
         if (gameManager != null)

@@ -4,7 +4,7 @@ public class PanelController : MonoBehaviour
 {
     public GameObject startPanel;
     public GameObject gameUIandObjects;
-    public GameObject menuButton;  
+    public GameObject menuButton;
     public GameObject finishPanel;
 
     public void CloseStartPanel()
@@ -16,7 +16,9 @@ public class PanelController : MonoBehaviour
             gameUIandObjects.SetActive(true);
 
         if (menuButton != null)
-            menuButton.SetActive(true);  
+            menuButton.SetActive(true);
+
+        FindFirstObjectByType<GameManager>().StartBackgroundMusic();
     }
     public void CloseFinishPanel()
     {

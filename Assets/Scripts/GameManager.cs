@@ -11,19 +11,34 @@ public class GameManager : MonoBehaviour
 
     private int deadcount = 0;
     private bool isGameOver = false;
-
+    private AudioSource backgroundMusic;
+    private AudioSource gameOverAudioSource;
 
     public int DeadCount => deadcount;
 
     private void Start()
     {
+        backgroundMusic = GameObject.Find("BackgroundMusic").GetComponent<AudioSource>();
+        gameOverAudioSource = GetComponent<AudioSource>();
+
         deadcount = 0;
         UpdateDeadCounterUI();
 
         if (gameOverPanel != null)
             gameOverPanel.SetActive(false);
 
+        backgroundMusic.Stop();
+
         Time.timeScale = 1f;
+    }
+
+    public void StopBackgroundMusic()
+    {
+        backgroundMusic.Stop();
+    }
+    public void StartBackgroundMusic()
+    {
+        backgroundMusic.Play();
     }
 
     public void RestartGame()
@@ -51,16 +66,21 @@ public class GameManager : MonoBehaviour
 
     private void TriggerGameOver()
     {
+        StopBackgroundMusic();
+        gameOverAudioSource.Play();
+
         isGameOver = true;
 
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
 
         Time.timeScale = 0f;
+
     }
 
     public void StartPlayerRespawn(PlayerHealth playerHealth, float delay)
     {
+        StartBackgroundMusic();
         StartCoroutine(RespawnCoroutine(playerHealth, delay));
     }
 
